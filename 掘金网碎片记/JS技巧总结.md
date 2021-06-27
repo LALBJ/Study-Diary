@@ -162,3 +162,72 @@ function flattening(arr){
     return res
 }
 ```
+
+5. 防抖和节流
+
+``` JavaScript
+// 防抖
+// fn 需要防抖的函数
+// delay 防抖期待值
+function debounce(fn,delay){
+    let timer = null;
+    return function(){
+        if(timer){
+            clearTimeout(timer)
+        }
+        timer = setTimeout(fn,delay)
+    }
+}
+
+// 节流
+// fn 需要节流的函数
+// delay 节流的期待值
+function throttle(fn,delay){
+    let valid = true;
+    return function(){
+        if(!valid){
+            return false;
+        }
+        valid = false;
+        setTimeout(()=>{
+            fn()
+            valid = true
+        },delay)
+    }
+}
+```
+
+6. 实现new关键字
+new关键字做了以下事情
+* 创建一个空对象
+* 设置原型，将这个对象的原型设置为函数的prototype对象
+* 让函数的this指向这个对象，并执行构造函数的代码
+* 判断函数返回值类型，如果是值类型返回这个值，如果是引用类型返回引用对象
+
+``` JavaScript
+cosnt myNew = (...args)=>{
+    const [fn,...other]=args;
+    const target = Object.create(fn.prototype)
+    const res = fn.apply(target,other)
+    if(res && res === 'object' || typeof res === 'function'){
+        return res
+    }
+    return target
+}
+```
+
+7. 实现instanceof
+
+``` JavaScript
+const _instanceof = function(left,right){
+    if(!left && !right) return;
+    const rightPrototype = right.prototype;
+    while(left = Object.getPrototypeOf(left)){
+        if(left == rightPrototype) return true;
+    }
+    return false;
+}
+
+const obj = {a:1}
+console.log(_instanceof(obj,Object))
+```
